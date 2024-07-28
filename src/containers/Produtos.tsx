@@ -3,6 +3,10 @@ import Produto from '../components/Produto'
 
 import * as S from './styles'
 
+import { useDispatch } from 'react-redux'
+import { adicionarNoCarinho } from '../store/reducers/carrinho'
+// import { adicionarFavorito } from '../store/reducers/favoritos'
+
 type Props = {
   produtos: ProdutoType[]
   favoritos: ProdutoType[]
@@ -10,17 +14,17 @@ type Props = {
   favoritar: (produto: ProdutoType) => void
 }
 
-const ProdutosComponent = ({
-  produtos,
-  favoritos,
-  adicionarAoCarrinho,
-  favoritar
-}: Props) => {
+const ProdutosComponent = ({ produtos, favoritos, favoritar }: Props) => {
+  const dispatch = useDispatch()
+
   const produtoEstaNosFavoritos = (produto: ProdutoType) => {
     const produtoId = produto.id
-    const IdsDosFavoritos = favoritos.map((f) => f.id)
+    const idsDosFavoritos = favoritos.map((f) => f.id)
+    return idsDosFavoritos.includes(produtoId)
+  }
 
-    return IdsDosFavoritos.includes(produtoId)
+  const handleAdicionarAoCarinho = (produto: ProdutoType) => {
+    dispatch(adicionarNoCarinho(produto))
   }
 
   return (
@@ -32,7 +36,7 @@ const ProdutosComponent = ({
             key={produto.id}
             produto={produto}
             favoritar={favoritar}
-            aoComprar={adicionarAoCarrinho}
+            aoComprar={handleAdicionarAoCarinho}
           />
         ))}
       </S.Produtos>
